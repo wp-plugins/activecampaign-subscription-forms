@@ -1,6 +1,5 @@
 === ActiveCampaign Subscription Form ===
 Contributors: activecampaign
-Donate link: http://www.activecampaign.com/
 Tags: activecampaign, subscribe, email, newsletter, signup, marketing, plugin, widget, sidebar
 Requires at least: 2
 Tested up to: 2.8.4
