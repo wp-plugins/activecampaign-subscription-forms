@@ -38,7 +38,7 @@ function widget_ac_subscribe_public($args = false) {
 
 			if ($options_site["p_link"] && $options_site["username"] && $options_site["password"] && $options_form["form_id"]) {
 
-				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . $options_site["username"] . "&api_pass=" . $options_site["password"] . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"] . "&generate=1";
+				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . urlencode($options_site["username"]) . "&api_pass=" . urlencode($options_site["password"]) . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"] . "&generate=1";
 
 				$api_result = ac_subscribe_curl_get($api_url);
 
@@ -71,7 +71,7 @@ function widget_ac_subscribe_admin() {
 			// Have to run this section of code first, since we exit right away once this is run.
 			if ($_POST["ac_subscribe_form_submit"]) {
 
-				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . $options_site["username"] . "&api_pass=" . $options_site["password"] . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"] . "&generate=1";
+				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . urlencode($options_site["username"]) . "&api_pass=" . urlencode($options_site["password"]) . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"] . "&generate=1";
 
 				$api_result = ac_subscribe_curl_get($api_url);
 
@@ -103,7 +103,7 @@ function widget_ac_subscribe_admin() {
 
 			if ($p_link && $username && $password) {
 
-				$api_url = $p_link . "admin/api.php?api_user=" . $username . "&api_pass=" . $password . "&api_action=form_list&api_output=serialize&ids=all";
+				$api_url = $p_link . "admin/api.php?api_user=" . urlencode($username) . "&api_pass=" . urlencode($password) . "&api_action=form_list&api_output=serialize&ids=all";
 
 				$api_result = ac_subscribe_curl_get($api_url);
 
