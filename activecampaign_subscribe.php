@@ -69,7 +69,8 @@ function widget_ac_subscribe_admin() {
 
 			// The second part of the form, where we ask which form they want to use.
 			// Have to run this section of code first, since we exit right away once this is run.
-			if ($_POST["ac_subscribe_form_submit"]) {
+			// Hidden form element which is set to true when that part of the form is submitted
+			if ($_POST["ac_subscribe_form_submit"] == true) {
 
 				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . urlencode($options_site["username"]) . "&api_pass=" . urlencode($options_site["password"]) . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"] . "&generate=1";
 
@@ -90,80 +91,88 @@ function widget_ac_subscribe_admin() {
 				exit();
 			}
 
-			// Update options_site values from form to database.
-			// Also set friendly-named variables for use further down.
-			// We use the form element values to conduct the API call - not the saved database values.
-			// In other words, we don't save, then pull the same values. We just use the values they provided in the form.
-			// For p_link, check for trailing slash - if there is not one, add it before saving.
-			$options_site_update["p_link"] = $p_link = ( substr($_POST["p_link"], -1, 1) != "/" ) ? $_POST["p_link"] . "/" : $_POST["p_link"];
-			$options_site_update["username"] = $username = $_POST["username"];
-			$options_site_update["password"] = $password = $_POST["password"];
+			if ($_POST["p_link"] != "" && $_POST["p_link"] != "/" && $_POST["username"] != "" && $_POST["password"] != "") {
 
-			ac_subscribe_options_site_update($options_site_update);
-
-			if ($p_link && $username && $password) {
-
-				$api_url = $p_link . "admin/api.php?api_user=" . urlencode($username) . "&api_pass=" . urlencode($password) . "&api_action=form_list&api_output=serialize&ids=all";
-
-				$api_result = ac_subscribe_curl_get($api_url);
-
-				// If the result code is 0, meaning the URL, username, or password could be incorrect,
-				// or they don't have the form_list API call (using an older version)
-				if (!$api_result["result_code"]) {
-
-					echo "
-
-					<p><span style=\"color: red; font-weight: bold;\">Connection failed.</span> Here is the message returned:</p>
-
-					";
-
-					echo "
-
-					<p><span style=\"font-weight: bold;\">" . $api_result["result_message"] . "</span></p>
-
-					<p style=\"font-size: 0.9em;\">Please make sure that your login information is correct, and that you are using a version of ActiveCampaign Email Marketing that supports
-					API actions for subscription forms (began in version 5.0.16).</p>
-
-					";
-
-					// Show login form again
-					ac_subscribe_admin_login();
-
-					exit();
-				}
-
-				// Start second page of the form
-
-				echo "
-
-				<p>Please select the form you'd like to display:</p>
-
-				";
-
-				// Loop through each array item in the result
-				// Remember, the result contains other items like "result_code"
-				foreach ($api_result as $k => $v) {
-
-					// Only look at array items that are not result_code, result_message, or result_output (included at the end of the result array)
-					if ( $k === 0 || intval($k) ) {
-
+				// Update options_site values from form to database.
+				// Also set friendly-named variables for use further down.
+				// We use the form element values to conduct the API call - not the saved database values.
+				// In other words, we don't save, then pull the same values. We just use the values they provided in the form.
+				// For p_link, check for trailing slash - if there is not one, add it before saving.
+				$options_site_update["p_link"] = $p_link = ( substr($_POST["p_link"], -1, 1) != "/" ) ? $_POST["p_link"] . "/" : $_POST["p_link"];
+				$options_site_update["username"] = $username = $_POST["username"];
+				$options_site_update["password"] = $password = $_POST["password"];
+	
+				ac_subscribe_options_site_update($options_site_update);
+	
+				if ($p_link && $username && $password) {
+	
+					$api_url = $p_link . "admin/api.php?api_user=" . urlencode($username) . "&api_pass=" . urlencode($password) . "&api_action=form_list&api_output=serialize&ids=all";
+	
+					$api_result = ac_subscribe_curl_get($api_url);
+	
+					// If the result code is 0, meaning the URL, username, or password could be incorrect,
+					// or they don't have the form_list API call (using an older version)
+					if (!$api_result["result_code"]) {
+	
 						echo "
-
-						<p>
-
-							<input type=\"radio\" name=\"ac_subscribe_form_id\" id=\"form_id_" . $v["id"] . "\" value=\"" . $v["id"] . "\" />
-
-							";
-
-							echo "<label for=\"form_id_" . $v["id"] . "\">" . $v["name"] . "</label>";
-
-							echo "
-
-						</p>
-
+	
+						<p><span style=\"color: red; font-weight: bold;\">Connection failed.</span> Here is the message returned:</p>
+	
 						";
+	
+						echo "
+	
+						<p><span style=\"font-weight: bold;\">" . $api_result["result_message"] . "</span></p>
+	
+						<p style=\"font-size: 0.9em;\">Please make sure that your login information is correct, and that you are using a version of ActiveCampaign Email Marketing that supports
+						API actions for subscription forms (began in version 5.0.16).</p>
+	
+						";
+	
+						// Show login form again
+						ac_subscribe_admin_login();
+	
+						exit();
+					}
+
+					// Start second page of the form
+	
+					echo "
+	
+					<p>Please select the form you'd like to display:</p>
+	
+					";
+	
+					// Loop through each array item in the result
+					// Remember, the result contains other items like "result_code"
+					foreach ($api_result as $k => $v) {
+	
+						// Only look at array items that are not result_code, result_message, or result_output (included at the end of the result array)
+						if ( $k === 0 || intval($k) ) {
+	
+							echo "
+	
+							<p>
+	
+								<input type=\"radio\" name=\"ac_subscribe_form_id\" id=\"form_id_" . $v["id"] . "\" value=\"" . $v["id"] . "\" />
+	
+								";
+	
+								echo "<label for=\"form_id_" . $v["id"] . "\">" . $v["name"] . "</label>";
+	
+								echo "
+	
+							</p>
+	
+							";
+						}
 					}
 				}
+				else {
+				
+					ac_subscribe_admin_login();				
+				}
+					
 				?>
 
 				<input type="checkbox" name="ac_subscribe_form_fetch" id="ac_subscribe_form_fetch" />
