@@ -10,6 +10,7 @@ Author URI: http://www.activecampaign.com/
 
 # Changelog
 ## version 1: - initial release
+## version 1.1: Verified this works with latest versions of WordPress and ActiveCampaign; Updated installation instructions
 
 function widget_ac_subscribe_public($args = false) {
 
