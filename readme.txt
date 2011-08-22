@@ -52,3 +52,8 @@ If you check this box, WordPress will re-request the details of your form each t
 = 1.1 =
 * Verified this works with latest versions of WordPress and ActiveCampaign
 * Updated installation instructions
+
+== Upgrade Notice ==
+
+= 1.1 =
+* Installation instructions updated if you are having trouble installing it
