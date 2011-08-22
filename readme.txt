@@ -4,7 +4,6 @@ Tags: activecampaign, subscribe, email, newsletter, signup, marketing, plugin, w
 Requires at least: 2
 Tested up to: 3.2.1
 Stable tag: trunk
-Last updated time: 2011-08-22
 
 The ActiveCampaign email marketing plugin connects Wordpress with your email marketing software and allows you to choose a subscription form to embed (as a widget) anywhere on your site.
 
