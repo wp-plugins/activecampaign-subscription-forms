@@ -4,7 +4,7 @@ Plugin Name: ActiveCampaign Email Marketing
 Plugin URI: http://www.activecampaign.com/email-marketing/extend-wordpress.php
 Description: The ActiveCampaign email marketing plugin connects Wordpress with your email marketing software and allows you to choose a subscription form to embed (as a widget) anywhere on your site.  After enabling go to Appearance > Widgets to activate this plugin.
 Author: ActiveCampaign
-Version: 1
+Version: 1.1
 Author URI: http://www.activecampaign.com/
 */
 
@@ -101,78 +101,78 @@ function widget_ac_subscribe_admin() {
 				$options_site_update["p_link"] = $p_link = ( substr($_POST["p_link"], -1, 1) != "/" ) ? $_POST["p_link"] . "/" : $_POST["p_link"];
 				$options_site_update["username"] = $username = $_POST["username"];
 				$options_site_update["password"] = $password = $_POST["password"];
-	
+
 				ac_subscribe_options_site_update($options_site_update);
-	
+
 				if ($p_link && $username && $password) {
-	
+
 					$api_url = $p_link . "admin/api.php?api_user=" . urlencode($username) . "&api_pass=" . urlencode($password) . "&api_action=form_list&api_output=serialize&ids=all";
-	
+
 					$api_result = ac_subscribe_curl_get($api_url);
-	
+
 					// If the result code is 0, meaning the URL, username, or password could be incorrect,
 					// or they don't have the form_list API call (using an older version)
 					if (!$api_result["result_code"]) {
-	
+
 						echo "
-	
+
 						<p><span style=\"color: red; font-weight: bold;\">Connection failed.</span> Here is the message returned:</p>
-	
+
 						";
-	
+
 						echo "
-	
+
 						<p><span style=\"font-weight: bold;\">" . $api_result["result_message"] . "</span></p>
-	
+
 						<p style=\"font-size: 0.9em;\">Please make sure that your login information is correct, and that you are using a version of ActiveCampaign Email Marketing that supports
 						API actions for subscription forms (began in version 5.0.16).</p>
-	
+
 						";
-	
+
 						// Show login form again
 						ac_subscribe_admin_login();
-	
+
 						exit();
 					}
 
 					// Start second page of the form
-	
+
 					echo "
-	
+
 					<p>Please select the form you'd like to display:</p>
-	
+
 					";
-	
+
 					// Loop through each array item in the result
 					// Remember, the result contains other items like "result_code"
 					foreach ($api_result as $k => $v) {
-	
+
 						// Only look at array items that are not result_code, result_message, or result_output (included at the end of the result array)
 						if ( $k === 0 || intval($k) ) {
-	
+
 							echo "
-	
+
 							<p>
-	
+
 								<input type=\"radio\" name=\"ac_subscribe_form_id\" id=\"form_id_" . $v["id"] . "\" value=\"" . $v["id"] . "\" />
-	
+
 								";
-	
+
 								echo "<label for=\"form_id_" . $v["id"] . "\">" . $v["name"] . "</label>";
-	
+
 								echo "
-	
+
 							</p>
-	
+
 							";
 						}
 					}
 				}
 				else {
-				
-					ac_subscribe_admin_login();				
+
+					ac_subscribe_admin_login();
 				}
-					
+
 				?>
 
 				<input type="checkbox" name="ac_subscribe_form_fetch" id="ac_subscribe_form_fetch" />
