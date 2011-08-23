@@ -9,7 +9,7 @@ Connects WordPress with your ActiveCampaign email marketing software and allows 
 
 == Description ==
 
-The [ActiveCampaign email marketing plugin](http://www.activecampaign.com/) connects WordPress with your [email marketing software](http://www.activecampaign.com/email-marketing/) and allows you to choose a subscription form to embed (as a widget) anywhere on your site. After enabling go to Appearance > Widgets to activate this plugin.
+The ActiveCampaign [email marketing](http://www.activecampaign.com/) plugin connects WordPress with your [email marketing software](http://www.activecampaign.com/email-marketing/) and allows you to choose a subscription form to embed (as a widget) anywhere on your site. After enabling go to Appearance > Widgets to activate this plugin.
 
 For more information and to try this add-on sign up for our [free email marketing](http://www.activecampaign.com/free/) service.
 
