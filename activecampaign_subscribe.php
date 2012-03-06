@@ -4,13 +4,14 @@ Plugin Name: ActiveCampaign Email Marketing
 Plugin URI: http://www.activecampaign.com/email-marketing/extend-wordpress.php
 Description: The ActiveCampaign email marketing plugin connects Wordpress with your email marketing software and allows you to choose a subscription form to embed (as a widget) anywhere on your site.  After enabling go to Appearance > Widgets to activate this plugin.
 Author: ActiveCampaign
-Version: 1.1
+Version: 2.0
 Author URI: http://www.activecampaign.com/
 */
 
 # Changelog
 ## version 1: - initial release
 ## version 1.1: Verified this works with latest versions of WordPress and ActiveCampaign; Updated installation instructions
+## version 2.0: Re-configured to work with ActiveCampaign version 5.4. Also improved some areas.
 
 function widget_ac_subscribe_public($args = false) {
 
@@ -39,11 +40,13 @@ function widget_ac_subscribe_public($args = false) {
 
 			if ($options_site["p_link"] && $options_site["username"] && $options_site["password"] && $options_form["form_id"]) {
 
-				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . urlencode($options_site["username"]) . "&api_pass=" . urlencode($options_site["password"]) . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"] . "&generate=1";
+				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . urlencode($options_site["username"]) . "&api_pass_h=" . $options_site["password"] . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"];
 
 				$api_result = ac_subscribe_curl_get($api_url);
 
-				echo $api_result["html"];
+				// for some reason the very first character of the string is "s" instead of "<". Example: sstyle>
+				$api_result = preg_replace("/^s?/i", "<", $api_result);
+				echo $api_result;
 			}
 		}
 	}
@@ -73,26 +76,38 @@ function widget_ac_subscribe_admin() {
 			// Hidden form element which is set to true when that part of the form is submitted
 			if ($_POST["ac_subscribe_form_submit"] == true) {
 
-				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . urlencode($options_site["username"]) . "&api_pass=" . urlencode($options_site["password"]) . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"] . "&generate=1";
+				// SECOND submit
+
+				$api_url = $options_site["p_link"] . "admin/api.php?api_user=" . urlencode($options_site["username"]) . "&api_pass_h=" . $options_site["password"] . "&api_action=form_view&api_output=serialize&id=" . $_POST["ac_subscribe_form_id"];
 
 				$api_result = ac_subscribe_curl_get($api_url);
+//print_r($api_result);exit();
+
+				if (is_array($api_result) && isset($api_result["result_code"]) && !(int)$api_result["result_code"]) {
+					echo "
+					<p><span style=\"color: red; font-weight: bold;\">Connection failed.</span> Here is the message returned:</p>
+					<p><span style=\"font-weight: bold;\">" . $api_result["result_message"] . "</span></p>
+					<p>API URL:<br /><a href=\"" . $api_url . "\">" . $api_url . "</a></p>
+					";
+					exit();
+				}
 
 				$options_form_update["form_id"] = $_POST["ac_subscribe_form_id"];
-				$options_form_update["form_html"] = $api_result["html"];
-				$options_form_update["form_fetch"] = ($_POST["ac_subscribe_form_fetch"]) ? 1 : 0;
+				// for some reason the very first character of the string is "s" instead of "<". Example: sstyle>
+				$api_result = preg_replace("/^s?/i", "<", $api_result);
+				$options_form_update["form_html"] = $api_result;
+				$options_form_update["form_fetch"] = ( isset($_POST["ac_subscribe_form_fetch"]) ) ? 1 : 0;
 
 				ac_subscribe_options_form_update($options_form_update);
 
-				echo "
-
-				Settings saved! Visit the public side to see the form in the sidebar. Refresh this page to go back and choose a different form.
-
-				";
+				echo "Settings saved! Visit the public side to see the form in the sidebar. Refresh this page to go back and choose a different form.";
 
 				exit();
 			}
 
 			if ($_POST["p_link"] != "" && $_POST["p_link"] != "/" && $_POST["username"] != "" && $_POST["password"] != "") {
+
+				// FIRST submit
 
 				// Update options_site values from form to database.
 				// Also set friendly-named variables for use further down.
@@ -101,19 +116,19 @@ function widget_ac_subscribe_admin() {
 				// For p_link, check for trailing slash - if there is not one, add it before saving.
 				$options_site_update["p_link"] = $p_link = ( substr($_POST["p_link"], -1, 1) != "/" ) ? $_POST["p_link"] . "/" : $_POST["p_link"];
 				$options_site_update["username"] = $username = $_POST["username"];
-				$options_site_update["password"] = $password = $_POST["password"];
+				$options_site_update["password"] = $password = md5($_POST["password"]);
 
 				ac_subscribe_options_site_update($options_site_update);
 
 				if ($p_link && $username && $password) {
 
-					$api_url = $p_link . "admin/api.php?api_user=" . urlencode($username) . "&api_pass=" . urlencode($password) . "&api_action=form_list&api_output=serialize&ids=all";
+					$api_url = $p_link . "admin/api.php?api_user=" . urlencode($username) . "&api_pass_h=" . $password . "&api_action=form_list&api_output=serialize";
 
 					$api_result = ac_subscribe_curl_get($api_url);
 
 					// If the result code is 0, meaning the URL, username, or password could be incorrect,
 					// or they don't have the form_list API call (using an older version)
-					if (!$api_result["result_code"]) {
+					if (!(int)$api_result["result_code"]) {
 
 						echo "
 
@@ -140,7 +155,7 @@ function widget_ac_subscribe_admin() {
 
 					echo "
 
-					<p>Please select the form you'd like to display:</p>
+					<p>Please select the form to display:</p>
 
 					";
 
@@ -249,7 +264,7 @@ function ac_subscribe_admin_login() {
 
 	<p>
 		Your Software Password:
-		<input type="password" name="password" id="password" value="<?php echo $options_site["password"]; ?>" style="width:99%;" />
+		<input type="password" name="password" id="password" autocomplete="off" style="width:99%;" />
 	</p>
 
 	<?php
