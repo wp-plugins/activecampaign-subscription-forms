@@ -43,7 +43,6 @@ If you check this box, WordPress will re-request the details of your form each t
 2. Selecting the subscription form to display
 3. Confirmation that your settings have been saved
 4. Viewing the subscription form on the public side when using the plugin
-5. Viewing the subscription form on the public side when manually pasting your HTML into a template
 
 == Changelog ==
 
@@ -60,7 +59,7 @@ If you check this box, WordPress will re-request the details of your form each t
 
 = 2.1 =
 * Changed internal API requests to use only API URL and Key instead of Username and Password.
-* Stripping out <style> blocks and converting <input type="button" into <input type="submit"
+* Stripping out `style` blocks and converting <input type="button" into <input type="submit"
 
 == Upgrade Notice ==
 
