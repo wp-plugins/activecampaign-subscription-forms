@@ -59,7 +59,7 @@ If you check this box, WordPress will re-request the details of your form each t
 
 = 2.1 =
 * Changed internal API requests to use only API URL and Key instead of Username and Password.
-* Stripping out `style` blocks and converting <input type="button" into <input type="submit"
+* Stripping out style blocks and converting <input type="button" into <input type="submit"
 
 == Upgrade Notice ==
 
