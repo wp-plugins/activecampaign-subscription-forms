@@ -28,8 +28,8 @@ function widget_ac_subscribe_public($args = false) {
 		ac_subscribe_curl_fail();
 	}
 	else {
-		// If it's set to fetch the form each time (using the API), or display the static HTML saved in the Wordpress database
-		if (!$options_form["form_fetch"]) {
+		if (!(int)$options_form["form_fetch"]) {
+			// if it's set to display the static HTML saved in the Wordpress database
 			if ($options_form["form_html"]) {
 				$form_html = $options_form["form_html"];
 				// remove <style> block
@@ -38,16 +38,16 @@ function widget_ac_subscribe_public($args = false) {
 					$form_html = str_replace($matches[0], "", $form_html);
 				}
 				// replace <input type="button" with <input type="submit" (otherwise the form won't submit)
-				$form_html = preg_replace("/<input type=\"button\" value=\"Subscribe\">/i", "<input type=\"submit\" value=\"Subscribe\">", $form_html);
+//print_r($matches);exit();
+				$form_html = preg_replace("/<input type=[\"']?button[\"']? value=[\"']?Subscribe[\"']?>/i", "<input type=\"submit\" value=\"Subscribe\">", $form_html);
 				echo $form_html;
 			}
 		}
 		else {
-
+			// If it's set to fetch the form each time (using the API)
 			if ($options_site["api_url"] && $options_site["api_key"] && $options_form["form_id"]) {
 
 				$api_url = $options_site["api_url"] . "admin/api.php?api_key=" . $options_site["api_key"] . "&api_action=form_view&api_output=serialize&id=" . $options_form["form_id"];
-
 				$api_result = ac_subscribe_curl_get($api_url);
 
 				// for some reason the very first character of the string is "s" instead of "<". Example: sstyle>
@@ -58,7 +58,7 @@ function widget_ac_subscribe_public($args = false) {
 					$api_result = str_replace($matches[0], "", $api_result);
 				}
 				// replace <input type="button" with <input type="submit" (otherwise the form won't submit)
-				$api_result = preg_replace("/<input type=\"button\" value=\"Subscribe\">/i", "<input type=\"submit\" value=\"Subscribe\">", $api_result);
+				$api_result = preg_replace("/<input type=[\"']?button[\"']? value=[\"']?Subscribe[\"']?>/i", "<input type=\"submit\" value=\"Subscribe\">", $api_result);
 				echo $api_result;
 			}
 		}
