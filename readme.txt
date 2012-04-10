@@ -47,27 +47,27 @@ If you check this box, WordPress will re-request the details of your form each t
 == Changelog ==
 
 = 1.0 =
-* Initial release
+* Initial release.
 
 = 1.1 =
-* Verified this works with latest versions of WordPress and ActiveCampaign
-* Updated installation instructions
+* Verified this works with latest versions of WordPress and ActiveCampaign.
+* Updated installation instructions.
 
 = 2.0 =
-* Re-configured to work with ActiveCampaign version 5.4
-* Improved some areas
+* Re-configured to work with ActiveCampaign version 5.4.
+* Improved some areas.
 
 = 2.1 =
 * Changed internal API requests to use only API URL and Key instead of Username and Password.
-* Stripping out style blocks and converting <input type="button" into <input type="submit"
+* Provided option to remove style blocks from embedded form code, and converting <input type="button" into <input type="submit".
 
 == Upgrade Notice ==
 
 = 1.1 =
-* Installation instructions updated if you are having trouble installing it
+* Installation instructions updated if you are having trouble installing it.
 
 = 2.0 =
-* Version 2.0 will NOT work with ActiveCampaign versions < 5.4
+* Version 2.0 will NOT work with ActiveCampaign versions < 5.4.
 
 = 2.1 =
 * This version requires the use of API URL and Key instead of Username and Password.
