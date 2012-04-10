@@ -32,11 +32,15 @@ function widget_ac_subscribe_public($args = false) {
 			// if it's set to display the static HTML saved in the Wordpress database
 			if ($options_form["form_html"]) {
 				$form_html = $options_form["form_html"];
-				// remove <style> block
-				preg_match_all("|<style[^>]*>(.*)</style>|iUs", $form_html, $matches);
-				if ( isset($matches[0]) and count($matches[0]) > 0 ) {
-					$form_html = str_replace($matches[0], "", $form_html);
+
+				if ( (int)$options_form["remove_css"] ) {
+					// remove <style> block
+					preg_match_all("|<style[^>]*>(.*)</style>|iUs", $form_html, $matches);
+					if ( isset($matches[0]) and count($matches[0]) > 0 ) {
+						$form_html = str_replace($matches[0], "", $form_html);
+					}
 				}
+
 				// replace <input type="button" with <input type="submit" (otherwise the form won't submit)
 //print_r($matches);exit();
 				$form_html = preg_replace("/<input type=[\"']?button[\"']? value=[\"']?Subscribe[\"']?>/i", "<input type=\"submit\" value=\"Subscribe\">", $form_html);
@@ -52,11 +56,15 @@ function widget_ac_subscribe_public($args = false) {
 
 				// for some reason the very first character of the string is "s" instead of "<". Example: sstyle>
 				$api_result = preg_replace("/^s?/i", "<", $api_result);
-				// remove <style> block
-				preg_match_all("|<style[^>]*>(.*)</style>|iUs", $api_result, $matches);
-				if ( isset($matches[0]) and count($matches[0]) > 0 ) {
-					$api_result = str_replace($matches[0], "", $api_result);
+
+				if ( (int)$options_form["remove_css"] ) {
+					// remove <style> block
+					preg_match_all("|<style[^>]*>(.*)</style>|iUs", $api_result, $matches);
+					if ( isset($matches[0]) and count($matches[0]) > 0 ) {
+						$api_result = str_replace($matches[0], "", $api_result);
+					}
 				}
+
 				// replace <input type="button" with <input type="submit" (otherwise the form won't submit)
 				$api_result = preg_replace("/<input type=[\"']?button[\"']? value=[\"']?Subscribe[\"']?>/i", "<input type=\"submit\" value=\"Subscribe\">", $api_result);
 				echo $api_result;
@@ -110,6 +118,7 @@ function widget_ac_subscribe_admin() {
 				$api_result = preg_replace("/^s?/i", "<", $api_result);
 				$options_form_update["form_html"] = $api_result;
 				$options_form_update["form_fetch"] = ( isset($_POST["ac_subscribe_form_fetch"]) ) ? 1 : 0;
+				$options_form_update["remove_css"] = ( isset($_POST["ac_subscribe_remove_css"]) ) ? 1 : 0;
 
 				ac_subscribe_options_form_update($options_form_update);
 
@@ -199,6 +208,11 @@ function widget_ac_subscribe_admin() {
 
 				<input type="checkbox" name="ac_subscribe_form_fetch" id="ac_subscribe_form_fetch" />
 				<label for="ac_subscribe_form_fetch">Fetch form with each page load?</label>
+
+				<br />
+
+				<input type="checkbox" name="ac_subscribe_remove_css" id="ac_subscribe_remove_css" />
+				<label for="ac_subscribe_remove_css">Remove embedded CSS? (Can often conflict with WordPress styles.)</label>
 
 				<input type="hidden" name="ac_subscribe_form_submit" value="true" />
 
