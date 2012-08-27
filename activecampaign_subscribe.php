@@ -255,6 +255,7 @@ function ac_subscribe_curl_get($api_url) {
 	curl_setopt($api_request, CURLOPT_HEADER, 0);
 	curl_setopt($api_request, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($api_request, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($api_request, CURLOPT_SSL_VERIFYPEER, false);
 	$api_response = curl_exec($api_request);
 	curl_close($api_request);
 //print_r($api_response);exit();
