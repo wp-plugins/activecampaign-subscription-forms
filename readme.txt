@@ -2,24 +2,24 @@
 Contributors: activecampaign
 Tags: activecampaign, subscribe, email, newsletter, signup, marketing, plugin, widget, sidebar
 Requires at least: 2
-Tested up to: 3.2.1
+Tested up to: 3.4.2
 Stable tag: trunk
 
-The ActiveCampaign email marketing plugin connects WordPress with your email marketing software and allows you to choose a subscription form to embed (as a widget) anywhere on your site.
+This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site. After enabling go to Appearance > Widgets to activate this plugin.
 
 == Description ==
 
-The ActiveCampaign plugin connects WordPress with your [email marketing software](http://www.activecampaign.com/) and allows you to choose a subscription form to embed (as a widget) anywhere on your site.  After enabling go to Appearance > Widgets to activate this plugin.
+This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site. After enabling go to Appearance > Widgets to activate this plugin.
 
-For more information & to download a free trial visit the [ActiveCampaign](http://www.activecampaign.com/) web site.
+For more information and to download a free trial visit the [ActiveCampaign](http://www.activecampaign.com/) web site.
 
 == Installation ==
 
 This section describes how to install the plugin and get it working.
 
-1. Upload the entire "activecampaign_subscribe" Zip file to the Plugins section of WordPress.
+1. Upload the entire "activecampaign" Zip file to the Plugins section of WordPress.
 2. Activate the plugin through the Plugins section in WordPress.
-3. Visit Appearance > Widgets and drag the "ActiveCampaign Subscription Form" widget to a sidebar.
+3. Visit Appearance > Widgets and drag the "ActiveCampaign" widget to a sidebar.
 4. Fill in your ActiveCampaign connection details, then hit Save.
 5. Choose a subscription form to display, then hit Save again.
 
@@ -33,13 +33,9 @@ You need to be using [ActiveCampaign email marketing software](http://www.active
 
 Please make sure that your login information is correct, and that you have at least one Integration form already created in the ActiveCampaign system.
 
-= What does "Fetch form with each page load" mean? =
-
-If you check this box, WordPress will re-request the details of your form each time the page is loaded. For performance reasons, it's best to leave this box unchecked.
-
 == Screenshots ==
 
-1. Entering your ActiveCampaign API information
+1. Entering your ActiveCampaign API connection information
 2. Selecting the subscription form to display
 3. Confirmation that your settings have been saved
 4. Viewing the subscription form on the public side when using the plugin
@@ -60,6 +56,12 @@ If you check this box, WordPress will re-request the details of your form each t
 = 2.1 =
 * Changed internal API requests to use only API URL and Key instead of Username and Password.
 * Provided option to remove style blocks from embedded form code, and converting <input type="button" into <input type="submit".
+
+= 3.0 =
+* Re-wrote widget backend to use most recent WordPress Widget structure.
+* Streamlined code and API usage.
+* Ability to reset or refresh your forms.
+* Better form width detection.
 
 == Upgrade Notice ==
 
