@@ -5,7 +5,7 @@ Requires at least: 2
 Tested up to: 3.4.2
 Stable tag: trunk
 
-This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site. After enabling go to Appearance > Widgets to activate this plugin.
+This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site.
 
 == Description ==
 
@@ -55,7 +55,7 @@ Please make sure that your login information is correct, and that you have at le
 
 = 2.1 =
 * Changed internal API requests to use only API URL and Key instead of Username and Password.
-* Provided option to remove style blocks from embedded form code, and converting <input type="button" into <input type="submit".
+* Provided option to remove style blocks from embedded form code, and converting input type="button" into input type="submit".
 
 = 3.0 =
 * Re-wrote widget backend to use most recent WordPress Widget structure.
