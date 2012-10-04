@@ -15,6 +15,8 @@ Author URI: http://www.activecampaign.com
 ## version 2.1: Changed internal API requests to use only API URL and Key instead of Username and Password. Also provided option to remove style blocks, and converting input type="button" into input type="submit"
 ## version 3.0: Re-wrote widget backend to use most recent WordPress Widget structure. Improvements include streamlined code and API usage, ability to reset or refresh your forms, and better form width detection.
 
+define("ACTIVECAMPAIGN_URL", "");
+define("ACTIVECAMPAIGN_API_KEY", "");
 require_once "activecampaign-api-php/ActiveCampaign.class.php";
 
 class ActiveCampaign_Widget extends WP_Widget {
