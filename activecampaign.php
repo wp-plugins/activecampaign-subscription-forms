@@ -282,6 +282,7 @@ function activecampaign_form_html($ac, $instance) {
 					// replace the API URL with the account URL (IE: https://account.api-us1.com is changed to http://account.activehosted.com).
 					// (the form has to submit to the account URL.)
 					$html = preg_replace("/action=['\"][^'\"]+['\"]/", "action='http://" . $instance["account"] . "/proc.php'", $html);
+					$html = preg_replace("/src=['\"][^'\"]+\/ac_global\/scripts\/randomimage\.php/", "src='http://" . $instance["account"] . "/ac_global/scripts/randomimage.php'", $html);
 				}
 				// replace the Submit button to be an actual submit type.
 				$html = preg_replace("/input type='button'/", "input type='submit'", $html);
