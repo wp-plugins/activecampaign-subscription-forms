@@ -1,6 +1,6 @@
 <?php
 
-if ( !defined("ACTIVECAMPAIGN_URL") || !defined("ACTIVECAMPAIGN_API_KEY") ) {
+if ( !defined("ACTIVECAMPAIGN_URL") || (!defined("ACTIVECAMPAIGN_API_KEY") && !defined("ACTIVECAMPAIGN_API_USER") && !defined("ACTIVECAMPAIGN_API_PASS")) ) {
 	include "config.php";
 }
 
@@ -85,5 +85,6 @@ require_once("List.class.php");
 require_once("Message.class.php");
 require_once("Subscriber.class.php");
 require_once("User.class.php");
+require_once("Webhook.class.php");
 
 ?>

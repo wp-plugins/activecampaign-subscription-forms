@@ -5,11 +5,13 @@ Requires at least: 2
 Tested up to: 3.4.2
 Stable tag: trunk
 
-This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site.
+This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site. After enabling go to Appearance > Widgets to activate this plugin.
 
 == Description ==
 
 This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site. After enabling go to Appearance > Widgets to activate this plugin.
+
+You can also use a shortcode to display your chosen subscription form anywhere that shortcode syntax is supported.
 
 For more information and to download a free trial visit the [ActiveCampaign Email Marketing](http://www.activecampaign.com/) web site.
 
@@ -22,6 +24,7 @@ This section describes how to install the plugin and get it working.
 3. Visit Appearance > Widgets and drag the "ActiveCampaign" widget to a sidebar.
 4. Fill in your ActiveCampaign connection details, then hit Save.
 5. Choose a subscription form to display, then hit Save again.
+6. Use [activecampaign] shortcode to display your form anywhere that shortcode syntax is supported.
 
 == Frequently Asked Questions ==
 
@@ -39,6 +42,8 @@ Please make sure that your login information is correct, and that you have at le
 2. Selecting the subscription form to display
 3. Confirmation that your settings have been saved
 4. Viewing the subscription form on the public side when using the plugin
+5. Using the [activecampaign] shortcode in a blog post
+6. Viewing the output of the [activecampaign] shortcode
 
 == Changelog ==
 
@@ -55,13 +60,16 @@ Please make sure that your login information is correct, and that you have at le
 
 = 2.1 =
 * Changed internal API requests to use only API URL and Key instead of Username and Password.
-* Provided option to remove style blocks from embedded form code, and converting input type="button" into input type="submit".
+* Provided option to remove style blocks from embedded form code, and converting <input type="button" into <input type="submit".
 
 = 3.0 =
 * Re-wrote widget backend to use most recent WordPress Widget structure.
 * Streamlined code and API usage.
 * Ability to reset or refresh your forms.
 * Better form width detection.
+
+= 3.5 =
+* You can now use a shortcode to display your subscription form.
 
 == Upgrade Notice ==
 
