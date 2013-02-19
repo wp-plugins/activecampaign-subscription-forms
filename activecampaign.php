@@ -12,7 +12,7 @@ Author URI: http://www.activecampaign.com
 ## version 1: - initial release
 ## version 1.1: Verified this works with latest versions of WordPress and ActiveCampaign; Updated installation instructions
 ## version 2.0: Re-configured to work with ActiveCampaign version 5.4. Also improved some areas.
-## version 2.1: Changed internal API requests to use only API URL and Key instead of Username and Password. Also provided option to remove style blocks, and converting <input type="button" into <input type="submit"
+## version 2.1: Changed internal API requests to use only API URL and Key instead of Username and Password. Also provided option to remove style blocks, and converting `input type="button"` into `input type="submit"`
 ## version 3.0: Re-wrote widget backend to use most recent WordPress Widget structure. Improvements include streamlined code and API usage, ability to reset or refresh your forms, and better form width detection.
 ## version 3.5: You can now use a shortcode to display your subscription form.
 

@@ -60,7 +60,7 @@ Please make sure that your login information is correct, and that you have at le
 
 = 2.1 =
 * Changed internal API requests to use only API URL and Key instead of Username and Password.
-* Provided option to remove style blocks from embedded form code, and converting <input type="button" into <input type="submit".
+* Provided option to remove style blocks from embedded form code, and converting `input type="button"` into `input type="submit"`.
 
 = 3.0 =
 * Re-wrote widget backend to use most recent WordPress Widget structure.
