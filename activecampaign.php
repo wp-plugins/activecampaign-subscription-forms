@@ -412,8 +412,10 @@ function activecampaign_form_html($ac, $instance) {
 			}
 
     	if ((int)$form_embed_params["ajax"] && !isset($form_embed_params["action"])) {
-    		// if they are using Ajax, but have not provided a custom action URL, we need to push it to a script where we can submit the form/process API request
-				$form_embed_params["action"] = get_site_url() . "/wp-content/plugins/activecampaign-subscription-forms/form_process.php?api_url=" . urlencode($instance["api_url"]) . "&api_key=" . $instance["api_key"] . "&sync=" . $sync;
+    		// if they are using Ajax, but have not provided a custom action URL, we need to push it to a script where we can submit the form/process API request.
+    		// remove the "http(s)" portion, because it was conflicting with the Ajax request (I was getting 404's).
+    		$api_url_process = preg_replace("/https:\/\//", "", $instance["api_url"]);
+				$form_embed_params["action"] = get_site_url() . "/wp-content/plugins/activecampaign-subscription-forms/form_process.php?api_url=" . $api_url_process . "&api_key=" . $instance["api_key"] . "&sync=" . $sync;
 			}
 
 			// prepare the params for the API call

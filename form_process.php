@@ -2,7 +2,7 @@
 
 	// only Ajax requests come through here
 
-	$api_url = $_GET["api_url"];
+	$api_url = (preg_match("/^https:\/\//", $_GET["api_url"])) ? $_GET["api_url"] : "https://" . $_GET["api_url"];
 	$api_key = $_GET["api_key"];
 	$sync = $_GET["sync"];
 
