@@ -77,16 +77,19 @@ class ActiveCampaign_Widget extends WP_Widget {
 
       case 1:
 
+      	$api_url = (isset($instance["api_url"])) ? $instance["api_url"] : "";
+      	$api_key = (isset($instance["api_key"])) ? $instance["api_key"] : "";
+
         ?>
 
         <p>
           API URL:
-          <input type="text" name="<?php echo $this->get_field_name("api_url"); ?>" id="activecampaign_api_url" value="<?php echo esc_attr($instance["api_url"]); ?>" style="width: 99%;" />
+          <input type="text" name="<?php echo $this->get_field_name("api_url"); ?>" id="activecampaign_api_url" value="<?php echo esc_attr($api_url); ?>" style="width: 99%;" />
         </p>
 
         <p>
           API Key:
-          <input type="text" name="<?php echo $this->get_field_name("api_key"); ?>" id="activecampaign_api_key" value="<?php echo esc_attr($instance["api_key"]); ?>" style="width: 99%;" />
+          <input type="text" name="<?php echo $this->get_field_name("api_key"); ?>" id="activecampaign_api_key" value="<?php echo esc_attr($api_key); ?>" style="width: 99%;" />
         </p>
 
         <?php
