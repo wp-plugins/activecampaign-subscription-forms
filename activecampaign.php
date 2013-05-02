@@ -290,7 +290,8 @@ class ActiveCampaign_Widget extends WP_Widget {
       }
       else {
         $account = $ac->api("account/view");
-        $instance["account"] = $account->account;
+				$domain = (isset($account->cname) && $account->cname) ? $account->cname : $account->account;
+        $instance["account"] = $domain;
         $instance = activecampaign_getforms($ac, $instance);
       }
 
