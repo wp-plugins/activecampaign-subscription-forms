@@ -9,7 +9,7 @@ This plugin connects WordPress with your ActiveCampaign software and allows you 
 
 == Description ==
 
-This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site with various options for how the form is displayed and submitted.
+(OFFICIAL) This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site with various options for how the form is displayed and submitted.
 
 After enabling go to Appearance > Widgets to activate this plugin. You can also use a shortcode to display your chosen subscription form anywhere that shortcode syntax is supported.
 
