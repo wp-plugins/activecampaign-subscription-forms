@@ -394,7 +394,12 @@ function activecampaign_getforms($ac, $instance) {
     $instance["forms"] = $items;
   }
   else {
-    $instance["error"] = $forms->error;
+  	if ($forms->error == "Failed: Nothing is returned") {
+  		$instance["error"] = "Nothing was returned. Do you have at least one form created in your ActiveCampaign account?";
+  	}
+  	else {
+    	$instance["error"] = $forms->error;
+    }
   }
   return $instance;
 }
