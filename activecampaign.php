@@ -109,7 +109,7 @@ class ActiveCampaign_Widget extends WP_Widget {
         	// just a flag to know if ANY form is checked (chosen)
         	$form_checked = 0;
 
-          foreach($instance["forms"] as $form) {
+          foreach ($instance["forms"] as $form) {
 
           	$checked = "";
           	if (isset($instance["form_id"]) && (int)$instance["form_id"] && (int)$instance["form_id"] == (int)$form["id"]) {
@@ -371,6 +371,203 @@ function activecampaign_shortcodes() {
   return "";
 }
 
+/*
+ * The ActiveCampaign settings page.
+ *
+ */
+function activecampaign_plugin_options() {
+
+	if (!current_user_can("manage_options"))  {
+		wp_die(__("You do not have sufficient permissions to access this page."));
+	}
+
+	$connected = false;
+	$step = 1;
+	$instance = array();
+
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+//dbg($_POST);
+
+		if ($_POST["api_url"] && $_POST["api_key"]) {
+
+			$disconnect = (int)$_POST["disconnect"];
+
+			if ($disconnect) {
+
+				$up = array(
+					"api_url" => "",
+					"api_key" => "",
+				);
+
+				update_option("settings_activecampaign", $up);
+
+			}
+			else {
+
+				$api_url = $_POST["api_url"];
+				$api_key = $_POST["api_key"];
+
+				$ac = new ActiveCampaign($api_url, $api_key);
+
+				if (!(int)$ac->credentials_test()) {
+					echo "<p style='color: red; font-weight: bold;'>" . __("Access denied: Invalid credentials (URL and/or API key).", "menu-activecampaign") . "</p>";
+				}
+				else {
+
+					$instance = array(
+						"api_url" => $api_url,
+						"api_key" => $api_key,
+						"ajax" => 0,
+						"css" => 1,
+					);
+
+					// get account details.
+					$account = $ac->api("account/view");
+					$domain = (isset($account->cname) && $account->cname) ? $account->cname : $account->account;
+					$instance["account"] = $domain;
+
+					// get forms.
+					$instance = activecampaign_getforms($ac, $instance);
+//dbg($instance);
+
+					//$instance = activecampaign_form_html($ac, $instance);
+
+					update_option("settings_activecampaign", $instance);
+
+					$connected = true;
+
+				}
+
+			}
+			
+		}
+		else {
+			// one of the fields is empty.
+		}
+
+	}
+	else {
+
+		$instance = get_option("settings_activecampaign");
+//dbg($settings,1);
+
+		if (isset($instance["api_url"]) && $instance["api_url"] && isset($instance["api_key"]) && $instance["api_key"]) {
+
+			// settings saved already.
+			$connected = true;
+
+		}
+		else {
+
+			// settings not saved yet.
+
+			// see if they set up our widget (maybe we can pull the API URL and Key from that).
+			$widget = get_option("widget_activecampaign_widget");
+
+			if ($widget) {
+				// if the ActiveCampaign widget is activated in a sidebar (dragged to a sidebar).
+
+				$widget_info = current($widget); // take the first item.
+
+				if (isset($widget_info["api_url"]) && $widget_info["api_url"] && isset($widget_info["api_key"]) && $widget_info["api_key"]) {
+					// if they already supplied an API URL and key in the widget.
+					$instance["api_url"] = $widget_info["api_url"];
+					$instance["api_key"] = $widget_info["api_key"];
+				}
+			}
+
+		}
+
+	}
+
+	?>
+
+	<h2><?php echo __("ActiveCampaign Settings", "menu-activecampaign"); ?></h2>
+	
+	<form name="activecampaign_settings_form" method="post" action="">
+
+		<h3><?php echo __("API Credentials", "menu-activecampaign"); ?></h3>
+
+		<p>
+			<?php echo __("API URL", "menu-activecampaign"); ?>:
+			<br />
+			<input type="text" name="api_url" id="activecampaign_api_url" value="<?php echo esc_attr($instance["api_url"]); ?>" style="width: 400px;" />
+		</p>
+
+		<p>
+			<?php echo __("API Key", "menu-activecampaign"); ?>:
+			<br />
+			<input type="text" name="api_key" id="activecampaign_api_key" value="<?php echo esc_attr($instance["api_key"]); ?>" style="width: 500px;" />
+		</p>
+		
+		<?php
+		
+			if (!$connected) {
+				
+				?>
+
+				<input type="hidden" name="disconnect" value="0" />
+				<p><input type="submit" value="<?php echo __("Connect", "menu-activecampaign"); ?>" />
+
+				<?php
+
+			}
+			else {
+
+				?>
+
+				<input type="hidden" name="disconnect" value="1" />
+				<p style="color: green; font-weight: bold;"><?php echo __("Successfully connected to ActiveCampaign", "menu-activecampaign"); ?></p>
+				<p><input type="submit" value="<?php echo __("Disconnect", "menu-activecampaign"); ?>" />
+
+				<?php
+
+			}
+		
+		?>
+
+		<?php
+
+			if (isset($instance["forms"]) && $instance["forms"]) {
+
+				?>
+
+				<h3><?php echo __("Subscription Forms", "menu-activecampaign"); ?></h3>
+
+				<?php
+
+				// just a flag to know if ANY form is checked (chosen)
+				$form_checked = 0;
+
+				foreach ($instance["forms"] as $form) {
+
+					$checked = "";
+					if (isset($instance["form_id"]) && (int)$instance["form_id"] && (int)$instance["form_id"] == (int)$form["id"]) {
+						$checked = "checked=\"checked\"";
+						$form_checked = 1;
+					}
+
+					?>
+
+					<input type="radio" name="form" id="activecampaign_form_<?php echo $form["id"]; ?>" value="<?php echo $form["id"]; ?>" <?php echo $checked; ?> />
+					<label for="activecampaign_form_<?php echo $form["id"]; ?>"><?php echo $form["name"]; ?></label>
+					<br />
+
+					<?php
+
+				}
+
+			}
+
+		?>
+
+	</form>
+
+	<?php
+
+}
+
 function dbg($var, $continue = 0, $element = "pre") {
   echo "<" . $element . ">";
   echo "Vartype: " . gettype($var) . "\n";
@@ -405,7 +602,9 @@ function activecampaign_getforms($ac, $instance) {
 }
 
 function activecampaign_form_html($ac, $instance) {
+
   foreach ($instance["forms"] as $form) {
+
     if ((int)$form["id"] == (int)$instance["form_id"]) {
 
 			$form_embed_params = array(
@@ -467,7 +666,9 @@ function activecampaign_form_html($ac, $instance) {
       }
       $instance["form_html"] = $html;
     }
+
   }
+
   return $instance;
 }
 
@@ -483,7 +684,12 @@ function activecampaign_register_shortcodes() {
   add_shortcode("activecampaign", "activecampaign_shortcodes");
 }
 
+function activecampaign_plugin_menu() {
+	add_options_page(__("ActiveCampaign Settings", "menu-activecampaign"), __("ActiveCampaign", "menu-activecampaign"), "manage_options", "activecampaign", "activecampaign_plugin_options");
+}
+
 add_action("widgets_init", "activecampaign_register_widgets");
 add_action("init", "activecampaign_register_shortcodes");
+//add_action("admin_menu", "activecampaign_plugin_menu");
 
 ?>
