@@ -358,16 +358,25 @@ class ActiveCampaign_Widget extends WP_Widget {
 }
 
 function activecampaign_shortcodes() {
-	// just pull the subscription form HTML for now - you can update this later to support other shortcode options
-  $widget = get_option("widget_activecampaign_widget");
-  // it comes out as an array with other things in it, so loop through it
-  foreach ($widget as $k => $v) {
-    // look for the one that appears to be the ActiveCampaign widget settings
-    if (isset($v["api_url"]) && isset($v["api_key"]) && isset($v["form_html"])) {
-      $widget_display = $v["form_html"];
-      return $widget_display;
-    }
-  }
+	// check for Settings options saved first.
+	$settings = get_option("settings_activecampaign");
+	if ($settings) {
+		if (isset($settings["form_html"]) && $settings["form_html"]) {
+			return $settings["form_html"];
+		}
+	}
+	else {
+		// try widget options.
+		$widget = get_option("widget_activecampaign_widget");
+		// it comes out as an array with other things in it, so loop through it
+		foreach ($widget as $k => $v) {
+			// look for the one that appears to be the ActiveCampaign widget settings
+			if (isset($v["api_url"]) && isset($v["api_key"]) && isset($v["form_html"])) {
+				$widget_display = $v["form_html"];
+				return $widget_display;
+			}
+		}
+	}
   return "";
 }
 
@@ -381,80 +390,57 @@ function activecampaign_plugin_options() {
 		wp_die(__("You do not have sufficient permissions to access this page."));
 	}
 
-	$connected = false;
 	$step = 1;
 	$instance = array();
+	$connected = false;
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-//dbg($_POST);
-
 		if ($_POST["api_url"] && $_POST["api_key"]) {
 
-			$disconnect = (int)$_POST["disconnect"];
+			$ac = new ActiveCampaign($_POST["api_url"], $_POST["api_key"]);
 
-			if ($disconnect) {
-
-				$up = array(
-					"api_url" => "",
-					"api_key" => "",
-				);
-
-				update_option("settings_activecampaign", $up);
-
+			if (!(int)$ac->credentials_test()) {
+				echo "<p style='color: red; font-weight: bold;'>" . __("Access denied: Invalid credentials (URL and/or API key).", "menu-activecampaign") . "</p>";
 			}
 			else {
 
-				$api_url = $_POST["api_url"];
-				$api_key = $_POST["api_key"];
+				$instance = $_POST;
+//dbg($instance,1);
 
-				$ac = new ActiveCampaign($api_url, $api_key);
+				// first form submit (after entering API credentials).
 
-				if (!(int)$ac->credentials_test()) {
-					echo "<p style='color: red; font-weight: bold;'>" . __("Access denied: Invalid credentials (URL and/or API key).", "menu-activecampaign") . "</p>";
-				}
-				else {
+				// get account details.
+				$account = $ac->api("account/view");
+				$domain = (isset($account->cname) && $account->cname) ? $account->cname : $account->account;
+				$instance["account"] = $domain;
 
-					$instance = array(
-						"api_url" => $api_url,
-						"api_key" => $api_key,
-						"ajax" => 0,
-						"css" => 1,
-					);
+				// get forms.
+				$instance = activecampaign_getforms($ac, $instance);
+//dbg($instance,1);
 
-					// get account details.
-					$account = $ac->api("account/view");
-					$domain = (isset($account->cname) && $account->cname) ? $account->cname : $account->account;
-					$instance["account"] = $domain;
-
-					// get forms.
-					$instance = activecampaign_getforms($ac, $instance);
-//dbg($instance);
-
-					//$instance = activecampaign_form_html($ac, $instance);
-
-					update_option("settings_activecampaign", $instance);
-
-					$connected = true;
-
-				}
+				$instance = activecampaign_form_html($ac, $instance);
+				
+				$connected = true;
 
 			}
-			
+
 		}
 		else {
-			// one of the fields is empty.
+			// one or both of the credentials fields is empty. it will just disconnect below because $instance is empty.
 		}
+
+		update_option("settings_activecampaign", $instance);
 
 	}
 	else {
 
 		$instance = get_option("settings_activecampaign");
-//dbg($settings,1);
+//dbg($instance);
 
 		if (isset($instance["api_url"]) && $instance["api_url"] && isset($instance["api_key"]) && $instance["api_key"]) {
 
-			// settings saved already.
+			// instance saved already.
 			$connected = true;
 
 		}
@@ -483,86 +469,218 @@ function activecampaign_plugin_options() {
 
 	?>
 
-	<h2><?php echo __("ActiveCampaign Settings", "menu-activecampaign"); ?></h2>
+	<div class="wrap">
+
+		<div id="icon-options-general" class="icon32"><br></div>
+
+		<h2><?php echo __("ActiveCampaign Settings", "menu-activecampaign"); ?></h2>
 	
-	<form name="activecampaign_settings_form" method="post" action="">
-
-		<h3><?php echo __("API Credentials", "menu-activecampaign"); ?></h3>
-
 		<p>
-			<?php echo __("API URL", "menu-activecampaign"); ?>:
-			<br />
-			<input type="text" name="api_url" id="activecampaign_api_url" value="<?php echo esc_attr($instance["api_url"]); ?>" style="width: 400px;" />
+			<?php
+
+				echo __("Configure your ActiveCampaign subscription form to be used as a shortcode anywhere on your site. Use <code>[activecampaign]</code> shortcode in posts and on pages after setting up everything below. Questions or problems? Contact help@activecampaign.com.", "menu-activecampaign");
+
+			?>
 		</p>
+	
+		<form name="activecampaign_settings_form" method="post" action="">
 
-		<p>
-			<?php echo __("API Key", "menu-activecampaign"); ?>:
-			<br />
-			<input type="text" name="api_key" id="activecampaign_api_key" value="<?php echo esc_attr($instance["api_key"]); ?>" style="width: 500px;" />
-		</p>
-		
-		<?php
-		
-			if (!$connected) {
-				
-				?>
+			<hr style="border: 1px dotted #ccc; border-width: 1px 0 0 0; margin-top: 30px;" />
 
-				<input type="hidden" name="disconnect" value="0" />
-				<p><input type="submit" value="<?php echo __("Connect", "menu-activecampaign"); ?>" />
+			<h3><?php echo __("API Credentials", "menu-activecampaign"); ?></h3>
 
-				<?php
+			<p>
+				<b><?php echo __("API URL", "menu-activecampaign"); ?>:</b>
+				<br />
+				<input type="text" name="api_url" id="activecampaign_api_url" value="<?php echo esc_attr($instance["api_url"]); ?>" style="width: 400px;" />
+			</p>
 
-			}
-			else {
+			<p>
+				<b><?php echo __("API Key", "menu-activecampaign"); ?>:</b>
+				<br />
+				<input type="text" name="api_key" id="activecampaign_api_key" value="<?php echo esc_attr($instance["api_key"]); ?>" style="width: 500px;" />
+			</p>
 
-				?>
+			<?php
 
-				<input type="hidden" name="disconnect" value="1" />
-				<p style="color: green; font-weight: bold;"><?php echo __("Successfully connected to ActiveCampaign", "menu-activecampaign"); ?></p>
-				<p><input type="submit" value="<?php echo __("Disconnect", "menu-activecampaign"); ?>" />
-
-				<?php
-
-			}
-		
-		?>
-
-		<?php
-
-			if (isset($instance["forms"]) && $instance["forms"]) {
-
-				?>
-
-				<h3><?php echo __("Subscription Forms", "menu-activecampaign"); ?></h3>
-
-				<?php
-
-				// just a flag to know if ANY form is checked (chosen)
-				$form_checked = 0;
-
-				foreach ($instance["forms"] as $form) {
-
-					$checked = "";
-					if (isset($instance["form_id"]) && (int)$instance["form_id"] && (int)$instance["form_id"] == (int)$form["id"]) {
-						$checked = "checked=\"checked\"";
-						$form_checked = 1;
-					}
+				if (!$connected) {
 
 					?>
 
-					<input type="radio" name="form" id="activecampaign_form_<?php echo $form["id"]; ?>" value="<?php echo $form["id"]; ?>" <?php echo $checked; ?> />
-					<label for="activecampaign_form_<?php echo $form["id"]; ?>"><?php echo $form["name"]; ?></label>
-					<br />
+					<p><?php echo __("Get your API credentials from the Settings > API section:", "menu-activecampaign"); ?></p>
+		
+					<p><img src="<?php echo plugins_url("activecampaign-subscription-forms"); ?>/settings1.jpg" /></p>
+
+					<?php
+
+				}
+				else {
+
+					?>
+
+
 
 					<?php
 
 				}
 
+			?>
+
+			<?php
+
+				if (isset($instance["forms"]) && $instance["forms"]) {
+
+					?>
+
+					<hr style="border: 1px dotted #ccc; border-width: 1px 0 0 0; margin-top: 30px;" />
+
+					<h3><?php echo __("Subscription Forms", "menu-activecampaign"); ?></h3>
+
+					<p><i><?php echo __("Choose a subscription form. To add new forms go to your ActiveCampaign > Integration section.", "menu-activecampaign"); ?></i></p>
+
+					<?php
+
+					// just a flag to know if ANY form is checked (chosen)
+					$form_checked = 0;
+
+					foreach ($instance["forms"] as $form) {
+
+						$checked = "";
+						if (isset($instance["form_id"]) && (int)$instance["form_id"] && (int)$instance["form_id"] == (int)$form["id"]) {
+							$checked = "checked=\"checked\"";
+							$form_checked = 1;
+						}
+
+						?>
+
+						<input type="radio" name="form_id" id="activecampaign_form_<?php echo $form["id"]; ?>" value="<?php echo $form["id"]; ?>" <?php echo $checked; ?> />
+						<label for="activecampaign_form_<?php echo $form["id"]; ?>"><?php echo $form["name"]; ?></label>
+						<br />
+
+						<?php
+
+					}
+
+					$settings_swim_checked = (isset($instance["syim"]) && $instance["syim"] == "swim") ? "checked=\"checked\"" : "";
+					$settings_sync_checked = (isset($instance["syim"]) && $instance["syim"] == "sync") ? "checked=\"checked\"" : "";
+					if (!$settings_swim_checked && !$settings_sync_checked) $settings_swim_checked = "checked=\"checked\""; // default
+					$settings_ajax_checked = (isset($instance["ajax"]) && (int)$instance["ajax"]) ? "checked=\"checked\"" : "";
+
+					$settings_css_checked = "";
+					if ( (isset($instance["css"]) && (int)$instance["css"]) || !$form_checked) {
+						// either it's been checked before, OR
+						// no form is chosen yet, so it's likely coming from step 1, so default the CSS checkbox to checked.
+						$settings_css_checked = "checked=\"checked\"";
+					}
+
+					$settings_action_value = (isset($instance["action"]) && $instance["action"]) ? $instance["action"] : "";
+
+					?>
+
+					<hr style="border: 1px dotted #ccc; border-width: 1px 0 0 0; margin-top: 30px;" />
+
+					<h3><?php echo __("Subscription Form Options", "menu-activecampaign"); ?></h3>
+
+					<p><i><?php echo __("Leave as default for normal behavior, or customize based on your needs.", "menu-activecampaign"); ?></i></p>
+
+					<input type="radio" name="syim" id="activecampaign_form_swim" value="swim" <?php echo $settings_swim_checked; ?> onchange="swim_toggle(this.checked);" />
+					<label for="activecampaign_form_swim" style="">Add Subscriber</label>
+
+					<br />
+
+					<input type="radio" name="syim" id="activecampaign_form_sync" value="sync" <?php echo $settings_sync_checked; ?> onchange="sync_toggle(this.checked);" />
+					<label for="activecampaign_form_sync" style="">Sync Subscriber</label>
+
+					<br />
+					<br />
+
+					<input type="checkbox" name="ajax" id="activecampaign_form_ajax" value="1" <?php echo $settings_ajax_checked; ?> onchange="ajax_toggle(this.checked);" />
+					<label for="activecampaign_form_ajax" style="">Process form using Ajax?</label>
+
+					<br />
+
+					<input type="checkbox" name="css" id="activecampaign_form_css" value="1" <?php echo $settings_css_checked; ?> />
+					<label for="activecampaign_form_css" style="">Keep original form CSS?</label>
+
+					<br />
+					<br />
+
+					<label for="activecampaign_form_action" style="">Custom form <code>action</code> URL</label>
+					<br />
+					<input type="text" name="action" id="activecampaign_form_action" value="<?php echo $settings_action_value; ?>" onkeyup="action_toggle(this.value);" style="width: 400px;" />
+
+					<script type='text/javascript'>
+
+						var swim_radio = document.getElementById("activecampaign_form_swim");
+						var sync_radio = document.getElementById("activecampaign_form_sync");
+						var ajax_checkbox = document.getElementById("activecampaign_form_ajax");
+						var action_textbox = document.getElementById("activecampaign_form_action");
+
+						function ac_str_is_url(url) {
+							url += '';
+								return url.match( /((http|https|ftp):\/\/|www)[a-z0-9\-\._]+\/?[a-z0-9_\.\-\?\+\/~=&#%;:\|,\[\]]*[a-z0-9\/=?&;%\[\]]{1}/i );
+						}
+
+						function swim_toggle(swim_checked) {
+							if (swim_checked) {
+
+							}
+						}
+
+						function sync_toggle(sync_checked) {
+							if (sync_checked && action_textbox.value == "") {
+								// if Sync is chosen, and there is no custom action URL, check the Ajax option.
+								ajax_checkbox.checked = true;
+							}
+						}
+
+						function ajax_toggle(ajax_checked) {
+							if ( !ajax_checked && sync_radio.checked && (!action_textbox.value || !ac_str_is_url(action_textbox.value)) )  {
+								// if Sync is checked, and action value is empty or invalid, and they UNcheck Ajax, alert them.
+								alert("If you use Sync, you need to use either the Ajax option, or your own custom action URL.");
+								ajax_checkbox.checked = true;
+							}
+						}
+
+						function action_toggle(action_value) {
+							if (action_textbox.value && ac_str_is_url(action_textbox.value)) {
+
+							}
+						}
+
+					</script>
+
+					<?php
+
+				}
+
+				$button_value = ($connected) ? "Update" : "Connect";
+
+			?>
+
+			<p><button type="submit" style="font-size: 16px; margin-top: 25px; padding: 10px;"><?php echo __($button_value, "menu-activecampaign"); ?></button></p>
+
+		</form>
+
+		<?php
+
+			if (isset($instance["form_html"])) {
+
+				?>
+
+				<hr style="border: 1px dotted #ccc; border-width: 1px 0 0 0; margin-top: 30px;" />
+
+				<h3><?php echo __("Subscription Form Preview", "menu-activecampaign"); ?></h3>	
+
+				<?php
+			
+				echo $instance["form_html"];
+		
 			}
 
 		?>
 
-	</form>
+	</div>
 
 	<?php
 
