@@ -52,12 +52,13 @@ Please make sure that your login information is correct, and that you have at le
 
 == Screenshots ==
 
-1. Entering your ActiveCampaign API connection information
+1. (Widget) Entering your ActiveCampaign API connection information
 2. Selecting the subscription form to display, and additional settings
 3. Confirmation that your settings have been saved
-4. Viewing the subscription form on the public side when using the plugin
-5. Using the [activecampaign] shortcode in a blog post
-6. Viewing the output of the [activecampaign] shortcode
+4. Settings page
+5. Viewing the subscription form on the public side when using the plugin
+6. Using the [activecampaign] shortcode in a blog post
+7. Viewing the output of the [activecampaign] shortcode
 
 == Changelog ==
 
