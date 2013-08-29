@@ -52,7 +52,7 @@ Please make sure that your login information is correct, and that you have at le
 
 == Screenshots ==
 
-1. (Widget) Entering your ActiveCampaign API connection information
+1. Widget: Entering your ActiveCampaign API connection information
 2. Selecting the subscription form to display, and additional settings
 3. Confirmation that your settings have been saved
 4. Settings page
