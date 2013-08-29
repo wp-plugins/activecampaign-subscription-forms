@@ -808,6 +808,6 @@ function activecampaign_plugin_menu() {
 
 add_action("widgets_init", "activecampaign_register_widgets");
 add_action("init", "activecampaign_register_shortcodes");
-//add_action("admin_menu", "activecampaign_plugin_menu");
+add_action("admin_menu", "activecampaign_plugin_menu");
 
 ?>
