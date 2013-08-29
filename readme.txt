@@ -9,9 +9,9 @@ This plugin connects WordPress with your ActiveCampaign software and allows you 
 
 == Description ==
 
-(OFFICIAL) This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site with various options for how the form is displayed and submitted.
+This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site with various options for how the form is displayed and submitted.
 
-After enabling go to Settings > ActiveCampaign, or Appearance > Widgets to activate this plugin. The Settings section is for use with the shortcode (<code>[activecampaign]</code>), and the Widget is primarily for embedding in a sidebar.
+After installing go to Settings > ActiveCampaign, or Appearance > Widgets to activate this plugin. The Settings section is for use with the shortcode (<code>[activecampaign]</code>), and the Widget is primarily for embedding in a sidebar.
 
 For more information and to download a free trial visit the [ActiveCampaign Email Marketing](http://www.activecampaign.com/) web site.
 
@@ -19,9 +19,9 @@ For more information and to download a free trial visit the [ActiveCampaign Emai
 
 This section describes how to install the plugin and get it working. Please see [our additional help documentation](http://www.activecampaign.com/help/integrating-subscription-forms-with-wordpress/) for more detailed information.
 
-1. Upload the entire "activecampaign" Zip file to the Plugins section of WordPress, or "Add New" plugin and search for "activecampaign."
+1. Upload the entire "activecampaign" zip file to the Plugins section of WordPress, or "Add New" plugin and search for "activecampaign."
 2. Visit the Settings > ActiveCampaign section, or activate the plugin through the Plugins section in WordPress.
-3. If using the widget, visit Appearance > Widgets and drag the "ActiveCampaign" widget to a sidebar.
+3. If using the widget, visit Appearance > Widgets and drag the "ActiveCampaign" widget to a sidebar (otherwise configure it under Settings > ActiveCampaign).
 4. Fill in your ActiveCampaign connection details, then hit Save.
 5. Choose a subscription form to display, any optional sub-settings, then hit Save again.
 6. Use `[activecampaign]` shortcode to display your form anywhere that shortcode syntax is supported.
@@ -34,11 +34,13 @@ You need to be using [ActiveCampaign email marketing software](http://www.active
 
 = How does this plugin differ from copying and pasting the subscription form onto my site manually? =
 
-It simply makes it much easier to do without requiring you to know which theme (or core WordPress) files to modify.
+This plugin makes it much easier to do without requiring you to know which theme (or core WordPress) files to modify. Often times copying and pasting HTML into WordPress can cause odd display issues (depending on your WordPress theme).
 
 = What happens after someone submits the subscription form on my WordPress site? =
 
 The same thing that would happen if they submitted it from another site: it redirects back to the ActiveCampaign confirmation message, or a custom URL if you have that set up for the subscription form in ActiveCampaign (modify your forms under the "Integration" section).
+
+If you enable the "Ajax" option of the plugin settings, you can have the form submitted without the page reloading (so the viewer never leaves the page).
 
 = Can my form require an opt-in email confirmation be sent? =
 
