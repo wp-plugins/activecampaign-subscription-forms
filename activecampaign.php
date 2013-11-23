@@ -2,7 +2,7 @@
 /*
 Plugin Name: ActiveCampaign
 Plugin URI: http://www.activecampaign.com/extend-wordpress.php
-Description: This plugin connects WordPress with your ActiveCampaign software and allows you to embed a subscription form on your site.
+Description: This plugin connects WordPress with your ActiveCampaign software and allows you to embed your subscription forms on your site.
 Author: ActiveCampaign
 Version: 5.0
 Author URI: http://www.activecampaign.com
