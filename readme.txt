@@ -24,6 +24,7 @@ This section describes how to install the plugin and get it working. Please see 
 3. Fill in your ActiveCampaign connection details, then hit Update.
 4. Choose which subscription forms to cache locally, any optional sub-settings for each, then hit Update again.
 5. Use `[activecampaign form=ID]` shortcode to display a form anywhere on your site where shortcode syntax is supported.
+6. Embed multiple forms onto a single page!
 
 == Frequently Asked Questions ==
 
