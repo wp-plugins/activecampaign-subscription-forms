@@ -118,7 +118,7 @@ class AC_Connector {
 		$http_code = curl_getinfo($request, CURLINFO_HTTP_CODE);
 		curl_close($request);
 		$object = json_decode($response);
-		if ( !is_object($object) || (!isset($object->result_code) && !isset($object->succeeded)) ) {
+		if ( !is_object($object) || (!isset($object->result_code) && !isset($object->succeeded) && !isset($object->success)) ) {
 		// add methods that only return a string
 			$string_responses = array("form_html");
 			if (in_array($method, $string_responses)) {
@@ -127,6 +127,10 @@ class AC_Connector {
 			// something went wrong
 			return "An unexpected problem occurred with the API request. Some causes include: invalid JSON or XML returned. Here is the actual response from the server: ---- " . $response;
 		}
+
+		header("HTTP/1.1 " . $http_code);
+		$object->http_code = $http_code;
+
 		if (isset($object->result_code)) {
 			$object->success = $object->result_code;
 			if (!(int)$object->result_code) {
