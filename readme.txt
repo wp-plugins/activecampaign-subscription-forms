@@ -93,6 +93,9 @@ Please make sure that your login information is correct, and that you have at le
 = 5.0 =
 * Added support for multiple forms. Removed widget entirely.	
 
+= 5.1 =
+* Added button to TinyMCE toolbar to more easily choose and embed the form shortcode into the post body.
+
 == Upgrade Notice ==
 
 = 1.1 =

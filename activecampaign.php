@@ -4,7 +4,7 @@ Plugin Name: ActiveCampaign
 Plugin URI: http://www.activecampaign.com/extend-wordpress.php
 Description: This plugin connects WordPress with your ActiveCampaign software and allows you to embed your subscription forms on your site.
 Author: ActiveCampaign
-Version: 5.0
+Version: 5.1
 Author URI: http://www.activecampaign.com
 */
 
@@ -18,6 +18,7 @@ Author URI: http://www.activecampaign.com
 ## version 4.0: Added many additional settings to control how your form is displayed and submitted.
 ## version 4.5: Added ActiveCampaign to the Settings menu so you can use the shortcode independent of the widget.
 ## version 5.0: Added support for multiple forms. Removed widget entirely.
+## version 5.1: Added button to TinyMCE toolbar to more easily choose and embed the form shortcode into the post body.
 
 define("ACTIVECAMPAIGN_URL", "");
 define("ACTIVECAMPAIGN_API_KEY", "");
