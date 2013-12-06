@@ -11,7 +11,7 @@ This plugin connects WordPress with your ActiveCampaign software and allows you 
 
 This plugin connects WordPress with your ActiveCampaign software and allows you to embed your subscription forms on your site with various options for how each form is displayed and submitted.
 
-After installing go to Settings > ActiveCampaign to activate this plugin.
+After installing go to Settings > ActiveCampaign to activate this plugin. You will need your ActiveCampaign API URL and key, and at least one integration form created in your ActiveCampaign account.
 
 For more information and to download a free trial visit the [ActiveCampaign Email Marketing](http://www.activecampaign.com/) web site.
 
