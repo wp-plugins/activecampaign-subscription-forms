@@ -2,7 +2,7 @@
 /*
 Plugin Name: ActiveCampaign
 Plugin URI: http://www.activecampaign.com/extend-wordpress.php
-Description: This plugin connects WordPress with your ActiveCampaign software and allows you to embed your subscription forms on your site.
+Description: Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. To get started, please activate the plugin and add your <a href="http://www.activecampaign.com/help/using-the-api/">API credentials</a> in the plugin settings.
 Author: ActiveCampaign
 Version: 5.1
 Author URI: http://www.activecampaign.com
@@ -253,15 +253,17 @@ function activecampaign_plugin_options() {
 						<div id="form_options_<?php echo $form["id"]; ?>" style="display: <?php echo $options_visibility; ?>; margin-left: 30px;">
 							<h4><?php echo __("Form Options", "menu-activecampaign"); ?></h4>
 							<p><i><?php echo __("Leave as default for normal behavior, or customize based on your needs.", "menu-activecampaign"); ?></i></p>
-							<input type="radio" name="syim[<?php echo $form["id"]; ?>]" id="activecampaign_form_swim_<?php echo $form["id"]; ?>" value="swim" <?php echo $settings_swim_checked; ?> onchange="swim_toggle(<?php echo $form["id"]; ?>, this.checked);" />
-							<label for="activecampaign_form_swim_<?php echo $form["id"]; ?>" style="">Add Subscriber</label>
-							<br />
-							<input type="radio" name="syim[<?php echo $form["id"]; ?>]" id="activecampaign_form_sync_<?php echo $form["id"]; ?>" value="sync" <?php echo $settings_sync_checked; ?> onchange="sync_toggle(<?php echo $form["id"]; ?>, this.checked);" />
-							<label for="activecampaign_form_sync_<?php echo $form["id"]; ?>" style="">Sync Subscriber</label>
-							<br />
-							<br />
+							<div style="display: none;">
+								<input type="radio" name="syim[<?php echo $form["id"]; ?>]" id="activecampaign_form_swim_<?php echo $form["id"]; ?>" value="swim" <?php echo $settings_swim_checked; ?> onchange="swim_toggle(<?php echo $form["id"]; ?>, this.checked);" />
+								<label for="activecampaign_form_swim_<?php echo $form["id"]; ?>" style="">Add Subscriber</label>
+								<br />
+								<input type="radio" name="syim[<?php echo $form["id"]; ?>]" id="activecampaign_form_sync_<?php echo $form["id"]; ?>" value="sync" <?php echo $settings_sync_checked; ?> onchange="sync_toggle(<?php echo $form["id"]; ?>, this.checked);" />
+								<label for="activecampaign_form_sync_<?php echo $form["id"]; ?>" style="">Sync Subscriber</label>
+								<br />
+								<br />
+							</div>
 							<input type="checkbox" name="ajax[<?php echo $form["id"]; ?>]" id="activecampaign_form_ajax_<?php echo $form["id"]; ?>" value="1" <?php echo $settings_ajax_checked; ?> onchange="ajax_toggle(<?php echo $form["id"]; ?>, this.checked);" />
-							<label for="activecampaign_form_ajax_<?php echo $form["id"]; ?>" style="">Process form using Ajax?</label>
+							<label for="activecampaign_form_ajax_<?php echo $form["id"]; ?>" style="">Submit form without refreshing page?</label>
 							<br />
 							<input type="checkbox" name="css[<?php echo $form["id"]; ?>]" id="activecampaign_form_css_<?php echo $form["id"]; ?>" value="1" <?php echo $settings_css_checked; ?> />
 							<label for="activecampaign_form_css_<?php echo $form["id"]; ?>" style="">Keep original form CSS?</label>
@@ -567,85 +569,22 @@ add_filter("widget_text", "do_shortcode");
 
 global $pagenow;
 if (in_array($pagenow, array('post.php', 'page.php', 'post-new.php', 'post-edit.php'))) {
-	add_action("admin_footer", "activecampaign_javascript");
+	// this loads the JavaScript file on pages where we use it (any post page that uses the Editor).
+	wp_enqueue_script("editor_pages", get_site_url() . "/wp-content/plugins/activecampaign-subscription-forms/editor_pages.js", array(), false, true);
+	// any data we need to access in JavaScript.
+	$data = array(
+		"site_url" => __(site_url()),
+		"wp_version" => $wp_version,
+	);
+	wp_localize_script("editor_pages", "php_data", $data);
 }
 
 add_action("wp_ajax_activecampaign_get_forms", "activecampaign_get_forms_callback");
+add_action("wp_ajax_activecampaign_get_forms_html", "activecampaign_get_forms_html_callback");
 add_action("admin_enqueue_scripts", "activecampaign_custom_wp_admin_style");
 
-function activecampaign_javascript() {
-	$no_forms1 = __("No forms chosen yet. Go to the", "activecampaign-subscription-forms");
-	$no_forms2 = __("to choose your forms", "activecampaign-subscription-forms");
-	$no_forms3 = __("ActiveCampaign Settings page", "activecampaign-subscription-forms");
-	?>
-	<script type="text/javascript">
-
-		var $AC = jQuery.noConflict();
-
-		function activecampaign_editor_form_embed(form_id) {
-			// puts the [activecampaign form=#] shortcode into the body of the post.
-			var return_text = "[activecampaign form=" + form_id + "]";
-			tinymce.execCommand("mceInsertContent", 0, return_text);
-			$AC("#activecampaign_editor_forms").dialog("close");
-		}
-
-		function activecampaign_editor_form_dialog() {
-			// runs when you click the ActiveCampaign icon in the TinyMCE toolbar.
-
-			// shows the dialog to choose a form (after clicking the button in the editor).
-			$AC("#activecampaign_editor_forms").dialog({
-				title: "Insert ActiveCampaign Form",
-				width: 400
-			});
-
-		}
-
-		jQuery(document).ready(function($AC) {
-
-			var editor_forms = "<div id='activecampaign_editor_forms' style='display: none;'></div>";
-
-			var ajaxdata = {
-				action: "activecampaign_get_forms"
-				//whatever: 1234
-			};
-
-			$AC.ajax({
-				url: ajaxurl,
-				type: "GET",
-				data: ajaxdata,
-				error: function(jqXHR, textStatus, errorThrown) {
-					console.log(errorThrown);
-				},
-				success: function(data) {
-					data = JSON.parse(data);
-//console.log(data);
-//console.log(data.length);
-					if (typeof(data.length) == "undefined") {
-						// when there is data, data.length returns undefined for some reason.
-						var editor_forms = "<ul>";
-						for (var i in data) {
-							if (typeof(data[i]) != "function") {
-								editor_forms += "<li><a href='#' onclick='activecampaign_editor_form_embed(" + i + "); return false;'>" + data[i] + "</a></li>";
-							}
-						}
-						editor_forms += "</ul>";
-					}
-					else if (data.length == 0) {
-						var editor_forms = "<p><?php echo $no_forms1; ?> <a href='options-general.php?page=activecampaign'><?php echo $no_forms3; ?></a> <?php echo $no_forms2; ?>.</p>";
-					}
-					$AC("#activecampaign_editor_forms").html(editor_forms);
-				}
-			});
-
-			$AC("body").append(editor_forms);
-
-		});
-
-	</script>
-	<?php
-}
-
-function activecampaign_get_forms_callback() {
+// get the raw forms data (array) for use in multiple spots.
+function activecampaign_get_forms_ajax() {
 	// get forms that are cached after setting things up from the ActiveCampaign settings page.
 	global $wpdb; // this is how you get access to the database
 	$forms = array();
@@ -658,8 +597,34 @@ function activecampaign_get_forms_callback() {
 			}
 		}
 	}
-	echo json_encode($forms);
-	die(); // this is required to return a proper result
+	return $forms;
+}
+
+// JSON output.
+function activecampaign_get_forms_callback() {
+	$forms = activecampaign_get_forms_ajax();
+	$forms = json_encode($forms);
+	echo $forms;
+	die();
+}
+
+// HTML output of forms (for the post dialog/window after you click the icon in the editor toolbar).
+// version 3.9 has this.
+function activecampaign_get_forms_html_callback() {
+	$forms = activecampaign_get_forms_ajax();
+	echo "<div style='font-family: Arial, Helvetica, sans-serif; font-size: 13px;'>";
+	echo "<p>" . __("Choose an integration form below to embed into your post or page body. Add or edit forms in ActiveCampaign and then refresh the forms on the <a href='" . get_site_url() . "/wp-admin/options-general.php?page=activecampaign'>Settings page</a>.") . "</p>";
+	if ($forms) {
+		echo "<ul style='list-style-type: none; padding: 0; margin: 0 0 0 5px;'>";
+	}
+	foreach ($forms as $formid => $formname) {
+		echo "<li style='margin-bottom: 8px;'><a href='#' onclick='parent.activecampaign_editor_form_embed(" . $formid . "); return false;'>" . $formname . "</a></li>";
+	}
+	if ($forms) {
+		echo "</ul>";
+	}
+	echo "</div>";
+	die();
 }
 
 function activecampaign_custom_wp_admin_style() {
