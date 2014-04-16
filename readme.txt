@@ -5,7 +5,7 @@ Requires at least: 2
 Tested up to: 3.9
 Stable tag: trunk
 
-This plugin connects WordPress with your ActiveCampaign platform and allows you to embed your subscription forms on your site.
+Allows you to add ActiveCampaign contact forms to any post, page, or sidebar.
 
 == Description ==
 
