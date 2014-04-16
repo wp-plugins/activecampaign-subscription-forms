@@ -2,7 +2,7 @@
 /*
 Plugin Name: ActiveCampaign
 Plugin URI: http://www.activecampaign.com/extend-wordpress.php
-Description: Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. To get started, please activate the plugin and add your <a href="http://www.activecampaign.com/help/using-the-api/">API credentials</a> in the plugin settings.
+Description: Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. To get started, please activate the plugin and add your <a href="http://www.activecampaign.com/help/using-the-api/">API credentials</a> in the <a href="options-general.php?page=activecampaign">plugin settings</a>.
 Author: ActiveCampaign
 Version: 5.1
 Author URI: http://www.activecampaign.com
