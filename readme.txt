@@ -2,7 +2,7 @@
 Contributors: activecampaign
 Tags: activecampaign, subscribe, email, newsletter, signup, marketing, plugin, widget, sidebar
 Requires at least: 2
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: trunk
 
 This plugin connects WordPress with your ActiveCampaign platform and allows you to embed your subscription forms on your site.
