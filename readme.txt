@@ -96,6 +96,9 @@ Please make sure that your login information is correct, and that you have at le
 = 5.1 =
 * Added button to TinyMCE toolbar to more easily choose and embed the form shortcode into the post body.
 
+= 5.2 =
+* Default form behavior is now "sync." This coincided with WordPress version 3.9 release.
+
 == Upgrade Notice ==
 
 = 1.1 =
@@ -112,3 +115,6 @@ Please make sure that your login information is correct, and that you have at le
 
 = 5.0 =
 * The widget is removed entirely (in favor of the shortcode) so if you have a form in a sidebar, you'll now need to add a basic text widget with the shortcode in it. You choose your forms under the ActiveCampaign settings section.
+
+= 5.2 =
+* Default behavior of the form is now "sync" (add or update). If you had "Add Subscriber" chosen it will now perform "add or update." If you had "Sync Subscriber" chosen the behavior will remain the same.
