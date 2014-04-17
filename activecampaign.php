@@ -318,8 +318,8 @@ function activecampaign_plugin_options() {
 							var action_textbox = document.getElementById("activecampaign_form_action_" + form_id);
 							if ( !ajax_checked && sync_radio.checked && (!action_textbox.value || !ac_str_is_url(action_textbox.value)) )  {
 								// if Sync is checked, and action value is empty or invalid, and they UNcheck Ajax, alert them.
-								alert("If you use Sync, you need to use either the Ajax option, or your own custom action URL.");
-								ajax_checkbox.checked = true;
+								//alert("If you use Sync, you need to use either the Ajax option, or your own custom action URL.");
+								//ajax_checkbox.checked = true;
 							}
 						}
 
