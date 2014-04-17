@@ -5,7 +5,7 @@ Requires at least: 2
 Tested up to: 3.9
 Stable tag: trunk
 
-Allows you to add ActiveCampaign contact forms to any post, page, or sidebar.
+Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. Also allows you to enable ActiveCampaign site tracking for your WordPress blog.
 
 == Description ==
 
@@ -25,6 +25,7 @@ This section describes how to install the plugin and get it working. Please see 
 4. Choose which subscription forms to cache locally, any optional sub-settings for each, then hit Update again.
 5. Use `[activecampaign form=ID]` shortcode to display a form anywhere on your site where shortcode syntax is supported.
 6. Embed multiple forms onto a single page!
+7. Enable site tracking to have page visits tracked to ActiveCampaign.
 
 == Frequently Asked Questions ==
 
@@ -99,6 +100,9 @@ Please make sure that your login information is correct, and that you have at le
 = 5.2 =
 * Default form behavior is now "sync." This coincided with WordPress version 3.9 release.
 
+= 5.5 =
+* Added site tracking (optional setting).
+
 == Upgrade Notice ==
 
 = 1.1 =
@@ -118,3 +122,6 @@ Please make sure that your login information is correct, and that you have at le
 
 = 5.2 =
 * Default behavior of the form is now "sync" (add or update). If you had "Add Subscriber" chosen it will now perform "add or update." If you had "Sync Subscriber" chosen the behavior will remain the same.
+
+= 5.5 =
+* If site tracking is enabled it will embed some JavaScript code on each of your front-end pages.
