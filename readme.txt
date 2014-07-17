@@ -5,7 +5,7 @@ Requires at least: 2
 Tested up to: 3.9
 Stable tag: trunk
 
-Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. Also enable ActiveCampaign site tracking for your WordPress blog.
+Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. Also allows you to enable ActiveCampaign site tracking for your WordPress blog.
 
 == Description ==
 
@@ -103,6 +103,9 @@ Please make sure that your login information is correct, and that you have at le
 = 5.5 =
 * Added site tracking (optional setting).
 
+= 5.6 =
+* Patched major security bug.
+
 == Upgrade Notice ==
 
 = 1.1 =
@@ -125,3 +128,6 @@ Please make sure that your login information is correct, and that you have at le
 
 = 5.5 =
 * If site tracking is enabled it will embed some JavaScript code on each of your front-end pages.
+
+= 5.6 =
+* UPGRADE IMMEDIATELY - security bug patched (involving the API key being exposed).

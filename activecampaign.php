@@ -4,7 +4,7 @@ Plugin Name: ActiveCampaign
 Plugin URI: http://www.activecampaign.com/extend-wordpress.php
 Description: Allows you to add ActiveCampaign contact forms to any post, page, or sidebar. Also allows you to embed <a href="http://www.activecampaign.com/help/site-event-tracking/">ActiveCampaign site tracking</a> code in your pages. To get started, please activate the plugin and add your <a href="http://www.activecampaign.com/help/using-the-api/">API credentials</a> in the <a href="options-general.php?page=activecampaign">plugin settings</a>.
 Author: ActiveCampaign
-Version: 5.5
+Version: 5.6
 Author URI: http://www.activecampaign.com
 */
 
@@ -21,6 +21,7 @@ Author URI: http://www.activecampaign.com
 ## version 5.1: Added button to TinyMCE toolbar to more easily choose and embed the form shortcode into the post body.
 ## version 5.2: Default form behavior is now "sync." This coincided with WordPress version 3.9 release.
 ## version 5.5: Added site tracking.
+## version 5.6: Patched major security bug.
 
 define("ACTIVECAMPAIGN_URL", "");
 define("ACTIVECAMPAIGN_API_KEY", "");
@@ -478,7 +479,7 @@ function activecampaign_form_html($ac, $instance) {
 					// if they are using Ajax, but have not provided a custom action URL, we need to push it to a script where we can submit the form/process API request.
 					// remove the "http(s)" portion, because it was conflicting with the Ajax request (I was getting 404's).
 					$api_url_process = preg_replace("/https:\/\//", "", $instance["api_url"]);
-					$form_embed_params["action"] = get_site_url() . "/wp-content/plugins/activecampaign-subscription-forms/form_process.php?api_url=" . $api_url_process . "&api_key=" . $instance["api_key"] . "&sync=" . $sync;
+					$form_embed_params["action"] = get_site_url() . "/wp-content/plugins/activecampaign-subscription-forms/form_process.php?sync=" . $sync;
 				}
 
 				// prepare the params for the API call
