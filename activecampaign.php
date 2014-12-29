@@ -23,6 +23,7 @@ Author URI: http://www.activecampaign.com
 ## version 5.5: Added site tracking.
 ## version 5.6: Patched major security bug.
 ## version 5.7: Removed ability to add custom form "action" URL.
+## version 5.8: Security fix.
 
 define("ACTIVECAMPAIGN_URL", "");
 define("ACTIVECAMPAIGN_API_KEY", "");
@@ -669,6 +670,8 @@ function activecampaign_custom_wp_admin_style() {
 function activecampaign_frontend_scripts() {
 	wp_enqueue_script("site_tracking", get_site_url() . "/wp-content/plugins/activecampaign-subscription-forms/site_tracking.js", array(), false, true);
 	$settings = get_option("settings_activecampaign");
+	unset($settings["api_url"]);
+	unset($settings["api_key"]);
 	// any data we need to access in JavaScript.
 	$data = array(
 		"site_url" => __(site_url()),
