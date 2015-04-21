@@ -6,7 +6,7 @@ if ( !defined("ACTIVECAMPAIGN_URL") || (!defined("ACTIVECAMPAIGN_API_KEY") && !d
 
 require_once("Connector.class.php");
 
-class ActiveCampaign extends AC_Connector {
+class ActiveCampaignWordPress extends AC_ConnectorWordPress {
 
 	public $url_base;
 	public $url;
@@ -20,7 +20,7 @@ class ActiveCampaign extends AC_Connector {
 	function __construct($url, $api_key, $api_user = "", $api_pass = "") {
 		$this->url_base = $this->url = $url;
 		$this->api_key = $api_key;
-		AC_Connector::__construct($url, $api_key, $api_user, $api_pass);
+		parent::__construct($url, $api_key, $api_user, $api_pass);
 	}
 
 	function version($version) {
@@ -80,11 +80,11 @@ class ActiveCampaign extends AC_Connector {
 		}
 
 		$class = ucwords($component); // IE: "contact" becomes "Contact"
-		$class = "AC_" . $class;
+		$class = "AC_" . $class . "WordPress";
 		// IE: new Contact();
 
 		$add_tracking = false;
-		if ($class == "AC_Tracking") $add_tracking = true;
+		if ($class == "AC_TrackingWordPress") $add_tracking = true;
 
 		$class = new $class($this->version, $this->url_base, $this->url, $this->api_key);
 		// IE: $contact->view()
@@ -110,13 +110,16 @@ class ActiveCampaign extends AC_Connector {
 
 require_once("Account.class.php");
 require_once("Auth.class.php");
+require_once("Automation.class.php");
 require_once("Campaign.class.php");
 require_once("Contact.class.php");
+require_once("Deal.class.php");
 require_once("Design.class.php");
 require_once("Form.class.php");
 require_once("Group.class.php");
 require_once("List.class.php");
 require_once("Message.class.php");
+require_once("Settings.class.php");
 require_once("Subscriber.class.php");
 require_once("Tracking.class.php");
 require_once("User.class.php");
